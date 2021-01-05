@@ -4,6 +4,11 @@
 #include "stm32f4xx_conf.h"
 #include "sys.h"
 
+#define TIMEOUT 200             //超时时间
+#define Dummy_Byte 0xFFFF       //虚拟数据（用来产生时钟）
+#define START   0               //启动
+#define STOP    1               //停止
+
 //SPI初始化
 void SPI2_Flash_Init(void);
 
@@ -20,10 +25,6 @@ u8 SPI_Send_Byte(u8 Byte);
     return:返回接收到的数据
 ------------------------------------------------------------------------------------------------*/
 u8 SPI_Read_Byte(void);
-
-u32 SPI_Flash_ID(void);
-
-
 
 
 

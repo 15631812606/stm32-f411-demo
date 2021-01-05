@@ -3,6 +3,16 @@
 #include "stdio.h"	
 #include "stm32f4xx_conf.h"
 #include "sys.h" 
+#define DEBUG
+
+//输出调试信息（使用printf函数，所有C语言程序都可以移植）
+#define DEBUG_Info(str,arg...) printf("INFO:   "str"\r\n",##arg)
+
+#ifdef 	DEBUG
+	#define DEBUG_Error(str,arg...) printf("----->>ERROR:  %s  %s  %d line "str"\r\n",__FILE__,__FUNCTION__,__LINE__, ##arg)
+#else
+	#define DEBUG_Error(str,arg...) 
+#endif
 
 /*-----------------------------------------------------------------------------
 	初始化USART1串口

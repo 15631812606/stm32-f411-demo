@@ -3,7 +3,6 @@
     edit--by--wrs--2020-12-27
 -----------------------------------------------------------------------------------*/
 #include "spi.h"
-#define Dummy_Byte 0xFFFF
 
 //SPI初始化
 void SPI2_Flash_Init(void)
@@ -55,13 +54,13 @@ void SPI2_Flash_Init(void)
 ------------------------------------------------------------------------------------------------*/
 u8 SPI_Send_Byte(u8 Byte)
 {
-    u8 SPITimeout=200;
+    u8 SPITimeout=TIMEOUT;
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_TXE)==RESET)//等待发送为空
     {
         if((SPITimeout--)==0)
             return 0XEE;        //发送超时，返回0XEE
     }
-    SPITimeout=200;
+    SPITimeout=TIMEOUT;
     SPI_I2S_SendData(SPI2,Byte);    //发送数据
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_RXNE)==RESET)//等待接收不为空
     {
@@ -78,13 +77,13 @@ u8 SPI_Send_Byte(u8 Byte)
 ------------------------------------------------------------------------------------------------*/
 u8 SPI_Read_Byte(void)
 {
-    u8 SPITimeout=200;
+    u8 SPITimeout=TIMEOUT;
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_TXE)==RESET)//等待发送为空
     {
         if((SPITimeout--)==0)
             return 0XEE;        //发送超时，返回0XEE
     }
-    SPITimeout=200;
+    SPITimeout=TIMEOUT;
     SPI_I2S_SendData(SPI2,Dummy_Byte);    //发送数据
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_RXNE)==RESET)//等待接收不为空
     {
@@ -95,19 +94,6 @@ u8 SPI_Read_Byte(void)
     return SPI_I2S_ReceiveData(SPI2);//读取数据寄存器，返回接收到的数据
 }
 
-u32 SPI_Flash_ID(void)
-{
-    u32 Temp=0;
-    u8 Temp0=0,Temp1=0,Temp2=0;
-    PBout(12)=0;
-    SPI_Send_Byte(0X9F);
-    Temp0=SPI_Read_Byte();
-    Temp1=SPI_Read_Byte();
-    Temp2=SPI_Read_Byte();
-    PBout(12)=1;
-    Temp=(Temp0<<16)|(Temp1<<8)|Temp2;
-    return Temp;
-}
 
 
 
