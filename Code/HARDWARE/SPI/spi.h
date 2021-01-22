@@ -4,7 +4,8 @@
 #include "stm32f4xx_conf.h"
 #include "sys.h"
 
-#define TIMEOUT 200             //超时时间
+#define TIMEOUT 500             //超时时间
+#define ERROR   0XEE            //返回错误码
 #define Dummy_Byte 0xFFFF       //虚拟数据（用来产生时钟）
 #define START   0               //启动
 #define STOP    1               //停止

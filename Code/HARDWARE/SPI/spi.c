@@ -3,7 +3,7 @@
     edit--by--wrs--2020-12-27
 -----------------------------------------------------------------------------------*/
 #include "spi.h"
-
+#include "usart.h"
 //SPI初始化
 void SPI2_Flash_Init(void)
 {
@@ -50,22 +50,28 @@ void SPI2_Flash_Init(void)
     SPI发送一个字节byte
     byte:要发送的数据
     return:返回接收到的数据
-    发送/接收超时：返回0XEE
+    发送/接收超时：返回ERROR
 ------------------------------------------------------------------------------------------------*/
 u8 SPI_Send_Byte(u8 Byte)
 {
-    u8 SPITimeout=TIMEOUT;
+    u16 SPITimeout=TIMEOUT;
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_TXE)==RESET)//等待发送为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("SPI发送超时！！！");
+            return ERROR;        //发送超时，返回ERROR
+        }
     }
     SPITimeout=TIMEOUT;
     SPI_I2S_SendData(SPI2,Byte);    //发送数据
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_RXNE)==RESET)//等待接收不为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("SPI发送超时！！！");
+            return ERROR;        //发送超时，返回ERROR
+        }
     }
 
     return SPI_I2S_ReceiveData(SPI2);//读取数据寄存器，返回接收到的数据
@@ -77,18 +83,24 @@ u8 SPI_Send_Byte(u8 Byte)
 ------------------------------------------------------------------------------------------------*/
 u8 SPI_Read_Byte(void)
 {
-    u8 SPITimeout=TIMEOUT;
+    u16 SPITimeout=TIMEOUT;
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_TXE)==RESET)//等待发送为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("SPI发送超时！！！");
+            return ERROR;        //发送超时，返回ERROR
+        }
     }
     SPITimeout=TIMEOUT;
     SPI_I2S_SendData(SPI2,Dummy_Byte);    //发送数据
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_RXNE)==RESET)//等待接收不为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("SPI发送超时！！！");
+            return ERROR;        //发送超时，返回ERROR
+        }
     }
     
     return SPI_I2S_ReceiveData(SPI2);//读取数据寄存器，返回接收到的数据

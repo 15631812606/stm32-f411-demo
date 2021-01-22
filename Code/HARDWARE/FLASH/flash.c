@@ -1,15 +1,19 @@
 #include "flash.h"
 #include "spi.h"
 #include "usart.h"
+#include "delay.h"
 
 //Flash写一个字节，byte：要写入的字节
 u8 Flash_Write_byte(u8 byte)
 {
-    u8 SPITimeout=TIMEOUT;
+    u16 SPITimeout=TIMEOUT;
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_TXE)==RESET)//等待发送为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("Flash芯片写入超时出错!!!");
+            return ERROR;        //发送超时，返回ERROR
+        }
     }
     SPITimeout=TIMEOUT;
     
@@ -18,7 +22,10 @@ u8 Flash_Write_byte(u8 byte)
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_BSY)==SET)  //等待发送结束
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("Flash芯片写入超时出错!!!");
+            return ERROR;        //发送超时，返回ERROR
+        }
     }
     return SPI_I2S_ReceiveData(SPI2);//读取数据寄存器，返回接收到的数据
 }
@@ -27,11 +34,14 @@ u8 Flash_Write_byte(u8 byte)
 //Flash读一个字节
 u8 Flash_Read_byte(void)
 {
-    u8 SPITimeout=TIMEOUT;
+    u16 SPITimeout=TIMEOUT;
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_TXE)==RESET)//等待发送为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("Flash芯片读取超时出错!!!");
+            return ERROR;        //读取超时，返回ERROR
+        }
     }
     SPITimeout=TIMEOUT;
 
@@ -40,7 +50,10 @@ u8 Flash_Read_byte(void)
     while(SPI_I2S_GetFlagStatus(SPI2,SPI_I2S_FLAG_RXNE)==RESET)//等待接收不为空
     {
         if((SPITimeout--)==0)
-            return 0XEE;        //发送超时，返回0XEE
+        {
+            DEBUG_Error("Flash芯片读取超时出错!!!");
+            return ERROR;        //读取超时，返回ERROR
+        }
     }
     
     return SPI_I2S_ReceiveData(SPI2);//读取数据寄存器，返回接收到的数据
@@ -78,7 +91,7 @@ void Flash_Write_Enable(void)
 void Flash_WaitForWriteEnd(void)
 {
     u8 FLASH_Status = 0;
-    u8 SPITimeout=TIMEOUT;
+    u16 SPITimeout=TIMEOUT;
 
     FLASH_CS_Port = START;
 
@@ -88,9 +101,10 @@ void Flash_WaitForWriteEnd(void)
         FLASH_Status = Flash_Read_byte();
         if((SPITimeout--)==0)
         {
-            DEBUG_Error("Flash芯片超时出错");
-            return ;
+            DEBUG_Error("Flash芯片-写入/擦除-超时出错!!!<<<<");
+            return;
         }
+        delay_ms(1);
     }while((FLASH_Status&0x01)==SET);//正在写入
 
     FLASH_CS_Port = STOP;
@@ -105,11 +119,11 @@ void Flash_Sector_Erase(u32 SectorAddr)
 
     FLASH_CS_Port = START;
 
-    Flash_Write_byte(FLASH_SectorErase);            //发送扇区擦除指令
-    Flash_Write_byte(SectorAddr & 0xFF000000>>24);  //发送要擦除的扇区地址的高8位
-    Flash_Write_byte(SectorAddr & 0xFF0000>>16);    //发送要擦除的扇区地址的中高8位
-    Flash_Write_byte(SectorAddr & 0xFF00>>8);       //发送要擦除的扇区地址的低高8位
-    Flash_Write_byte(SectorAddr & 0xFF);            //发送要擦除的扇区地址的低高8位
+    Flash_Write_byte(FLASH_SectorErase);                //发送扇区擦除指令
+    // Flash_Write_byte(SectorAddr & 0xFF000000>>24);   //发送要擦除的扇区地址的高8位(大于128MB才有高8位地址)
+    Flash_Write_byte((SectorAddr & 0xFF0000)>>16);      //发送要擦除的扇区地址的中高8位
+    Flash_Write_byte((SectorAddr & 0xFF00)>>8);         //发送要擦除的扇区地址的低高8位
+    Flash_Write_byte(SectorAddr & 0xFF);                //发送要擦除的扇区地址的低高8位
 
     FLASH_CS_Port = STOP;
     Flash_WaitForWriteEnd();        //等待发送完毕
@@ -124,10 +138,10 @@ void Flash_Page_Write(u8* str,u32 WriteAddr,u16 NumByteToWrite)
     FLASH_CS_Port = START;//启动发送
     
     Flash_Write_byte(FLASH_PageProgram);
-    Flash_Write_byte(WriteAddr & 0xFF000000>>24);  //发送要擦除的扇区地址的高8位
-    Flash_Write_byte(WriteAddr & 0xFF0000>>16);    //发送要擦除的扇区地址的中高8位
-    Flash_Write_byte(WriteAddr & 0xFF00>>8);       //发送要擦除的扇区地址的低高8位
-    Flash_Write_byte(WriteAddr & 0xFF);            //发送要擦除的扇区地址的低高8位
+    // Flash_Write_byte(WriteAddr & 0xFF000000>>24);    //发送要擦除的扇区地址的高8位
+    Flash_Write_byte((WriteAddr & 0xFF0000)>>16);       //发送要擦除的扇区地址的中高8位
+    Flash_Write_byte((WriteAddr & 0xFF00)>>8);          //发送要擦除的扇区地址的低高8位
+    Flash_Write_byte(WriteAddr & 0xFF);                 //发送要擦除的扇区地址的低高8位
 
     if(NumByteToWrite>256)
     {
@@ -152,7 +166,7 @@ void Flash_Data_Write(u8* str,u32 WriteAddr,u16 NumByteToWrite)
     u8 NumOfPage = 0;
     u8 NumOfSingle = 0;
     u8 Addr = 0;
-    u8 count = 0,temp = 0;
+    u8 count = 0;
 
     //mod运算求余数，若WriteAddr是256字节的整数倍，则写入整数页
     Addr = WriteAddr%256;
@@ -210,14 +224,14 @@ void Flash_Data_Read(u8* str,u32 ReadAddr,u16 NumByteToRead)
     FLASH_CS_Port = START;
 
     Flash_Write_byte(FLASH_ReadData);
-    Flash_Write_byte(ReadAddr & 0xFF000000>>24);  //发送要擦除的扇区地址的高8位
-    Flash_Write_byte(ReadAddr & 0xFF0000>>16);    //发送要擦除的扇区地址的中高8位
-    Flash_Write_byte(ReadAddr & 0xFF00>>8);       //发送要擦除的扇区地址的低高8位
-    Flash_Write_byte(ReadAddr & 0xFF);            //发送要擦除的扇区地址的低高8位
+    // Flash_Write_byte(ReadAddr & 0xFF000000>>24);  //发送要擦除的扇区地址的高8位
+    Flash_Write_byte((ReadAddr & 0xFF0000)>>16);    //发送要擦除的扇区地址的中高8位
+    Flash_Write_byte((ReadAddr & 0xFF00)>>8);       //发送要擦除的扇区地址的低高8位
+    Flash_Write_byte(ReadAddr & 0xFF);              //发送要擦除的扇区地址的低高8位
 
     while(NumByteToRead--)
     {
-        *str = Flash_Write_byte(Dummy_Byte);
+        *str = Flash_Write_byte((u8)Dummy_Byte);
         str++;
     }
 
