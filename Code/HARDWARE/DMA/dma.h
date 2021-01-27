@@ -4,10 +4,10 @@
 #include "stdint.h"
 
 #define BUFFER_SIZE	32
-extern const u32 SRC_Buffer[];
+extern const u8 SRC_Buffer[];
 extern u32 DST_Buffer[];
 
-
+void Usart1_DMA2_init(void);
 void DMA2_init(void);
 
 
