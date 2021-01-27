@@ -4,7 +4,7 @@
 -----------------------------------------------------------------------------------*/
 #include "spi.h"
 #include "usart.h"
-//SPI初始化
+//SPI2初始化
 void SPI2_Flash_Init(void)
 {
     SPI_InitTypeDef SPI_InitStructure;
@@ -45,6 +45,40 @@ void SPI2_Flash_Init(void)
     SPI_Init(SPI2,&SPI_InitStructure);
 }
 
+//SPI3初始化
+void SPI3_LCD_Init(void)
+{
+    SPI_InitTypeDef SPI_InitStructure;
+    GPIO_InitTypeDef GPIO_InitStructure;
+    //使能相关的GPIO和SPI时钟
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3,ENABLE);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB,ENABLE);
+
+    //设置引脚复用
+    GPIO_PinAFConfig(GPIOB,GPIO_PinSource3,GPIO_AF_SPI3);//引脚复用为SPI2的CLK
+    GPIO_PinAFConfig(GPIOB,GPIO_PinSource5,GPIO_AF_SPI3);//引脚复用为SPI2的MOSI
+
+    //配置GPIO引脚
+    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_3|GPIO_Pin_5;//CLK和MOSI
+    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType=GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd=GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOB,&GPIO_InitStructure);
+
+    //配置SPI模式
+    SPI_InitStructure.SPI_Direction=SPI_Direction_2Lines_FullDuplex;    //全双工模式
+    SPI_InitStructure.SPI_Mode=SPI_Mode_Master;                         //主机模式
+    SPI_InitStructure.SPI_DataSize=SPI_DataSize_8b;                     //8位字节
+    SPI_InitStructure.SPI_CPOL=SPI_CPOL_High;                           //CLK时钟极性默认高
+    SPI_InitStructure.SPI_CPHA=SPI_CPHA_2Edge;                          //第二个边沿采样
+    SPI_InitStructure.SPI_NSS=SPI_NSS_Soft;                             //片选引脚用软件模式
+    SPI_InitStructure.SPI_BaudRatePrescaler=SPI_BaudRatePrescaler_4;    //时钟2分频
+    SPI_InitStructure.SPI_FirstBit=SPI_FirstBit_MSB;                    //MSB在前
+    SPI_InitStructure.SPI_CRCPolynomial=7;                              //默认CRC校验都选择7
+    SPI_Cmd(SPI3,ENABLE);
+    SPI_Init(SPI3,&SPI_InitStructure);
+}
 
 /*----------------------------------------------------------------------------------------------
     SPI发送一个字节byte

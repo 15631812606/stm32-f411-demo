@@ -4,25 +4,42 @@
 #include "usart.h"
 #include "spi.h"
 #include "flash.h"
+#include "dma.h"
 
-u8 tx_str[]="hello_world-1234567890";
-u8 rx_str[50];
+//要发送的数据
+const u32 SRC_Buffer[BUFFER_SIZE] = 
+{
+	0x11111111,
+	0x22222222,
+	0x33333333,
+	0x44444444,
+	0x55555555,
+	0x66666666,
+	0x77777777,
+	0x88888888,
+	0x99999999,
+	0xAAAAAAAA
+};
+//数据存储位置
+u32 DST_Buffer[BUFFER_SIZE]={0};
+
+
 int main(void)
 {
-	u32 Temp;
-	LED_GPIO_Init();
+	u8 i=0;
 	delay_init(100);//主频100MHz
 	Usart1_Init(115200);
-	SPI2_Flash_Init();
-	Temp=Flash_Read_ID();
-	Flash_Sector_Erase(0x000000);
-
-	Flash_Page_Write(tx_str,0x000100,sizeof(tx_str));
-	Flash_Data_Read(rx_str,0x000100,sizeof(tx_str));
+	LED_GPIO_Init();
+	DMA2_init();		//使能DMA2传输（M-to-M）
 	
-	DEBUG_Info("FlashID=%x",Temp);
-	printf("flash中写入的数据是：%s\r\n",rx_str);
-	
+	for(i=0;i<10;i++)
+	{
+		printf("SRC_Buffer:0x%x\r\n",SRC_Buffer[i]);
+	}
+	for(i=0;i<10;i++)
+	{
+		printf("DST_Buffer:0x%x\r\n",DST_Buffer[i]);
+	}
 	while(1)
 	{
 		LED_R_TOGGLE;		
