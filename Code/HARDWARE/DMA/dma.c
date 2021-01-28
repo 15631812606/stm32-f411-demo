@@ -21,7 +21,7 @@ void Usart1_DMA2_init(void)
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;             //使能源数据地址自动递增
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;     //目标数据字大小
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;//源数据字大小
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;                     //一次模式（存储器到存储器不能循环传输）
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;                     //一次模式（存储器到存储器不能循环传输）
     DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;               //优先级高
     DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;              //禁用FIFO模式
     DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;        

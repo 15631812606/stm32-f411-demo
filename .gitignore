@@ -47,3 +47,4 @@ Listings/
 *.iex
 *.sct
 *.scvd
+/Code/USER/stm32f411_Template.uvguix.WRS

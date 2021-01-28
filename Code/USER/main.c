@@ -18,10 +18,16 @@ int main(void)
 	Usart1_Init(115200);
 	LED_GPIO_Init();
 	Usart1_DMA2_init();		//使能DMA2传输（M-to-Usart1）
+
 	USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);
+	delay_ms(10);
+	
+	
 	//printf("DMA2_Usart1\r\n");
 	while(1)
 	{
+		DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);	//清除通道1的传输完成标志位（必须清除标志位才能进行下一次传输）
+		DMA_Cmd(DMA2_Stream7,ENABLE);				//再次使能DMA，重新启动一次传输
 		LED_R_TOGGLE;		
 		delay_ms(100);
 	}
