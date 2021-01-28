@@ -1,6 +1,6 @@
 #include "sys.h"
 #include "usart.h"	
-
+#include "dma.h"
 //加入以下代码,支持printf函数,而不需要选择use MicroLIB	  
 #if 1
 #pragma import(__use_no_semihosting)             
@@ -34,7 +34,7 @@ void Usart1_Init(u32 bound)
 	//GPIO端口设置
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
-//	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
 	
 	//使能相关时钟
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA,ENABLE); 	//使能GPIOA时钟
@@ -64,13 +64,13 @@ void Usart1_Init(u32 bound)
 	USART_Init(USART1, &USART_InitStructure); //初始化串口1
 
 	//Usart1 NVIC 配置
-	// NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);			//设置中断分组2
-	// NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;		//串口1中断通道
-	// NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=3;	//抢占优先级3
-	// NVIC_InitStructure.NVIC_IRQChannelSubPriority =3;		//子优先级3
-	// NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
-	// NVIC_Init(&NVIC_InitStructure);							//根据指定的参数初始化VIC寄存器
-
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);			//设置中断分组2
+	NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;		//串口1中断通道
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=3;	//抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority =3;		//子优先级3
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能
+	NVIC_Init(&NVIC_InitStructure);							//根据指定的参数初始化VIC寄存器
+	USART_ITConfig(USART1,USART_IT_IDLE,ENABLE);				//开启串口空闲中断
 	// USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);			//使能串口1接收中断
 	USART_Cmd(USART1,ENABLE);  //使能串口1 
 }
@@ -95,16 +95,15 @@ void Usart1_Send_String(u8 *data)
 	}
 }
 
-// void USART1_IRQHandler(void)//串口1中断服务程序
-// {
-// 	u8 Res;
-// 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-// 	{
-// 		USART_ClearFlag(USART1,USART_IT_RXNE);	//清除中断标志位
-// 		Res =USART_ReceiveData(USART1);//(USART1->DR);	//读取接收到的数据
-// 		Usart1_Send_String(&Res);
-//   	} 
-// } 
+void USART1_IRQHandler(void)//串口1中断服务程序
+{
+	u8 Res;
+	if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
+	{
+		USART_ReceiveData(USART1);//(USART1->DR);	//读取接收到的数据
+		Usart1_Send_String(&DST_Buffer);
+  	} 
+} 
 	
 
  
