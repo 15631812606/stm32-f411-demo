@@ -7,16 +7,15 @@
 #include "alientek_log.h"
 #include "pic.h"
 
-
 int main(void)
 {
-	delay_init(100000);//‰∏ªÈ¢ë100MHz
+	delay_init(100000);//÷˜∆µ100MHz
 	Usart1_Init(115200);
 	LED_GPIO_Init();
-    printf("LCDÂ±èÂπïÈ©±Âä®Á®ãÂ∫è\r\n");
+    printf("LCD∆¡ƒª«˝∂Ø≥Ã–Ú\r\n");
 
     LCD_GPIO_init();
-    //LCDÂàùÂßãÂåñ
+    //LCD≥ı ºªØ
     LCD_Init();
     LCD_Clear(BLACK);
     // LCD_DrawRectangle(10,10,100,100,RED);
@@ -26,7 +25,8 @@ int main(void)
     // LCD_ShowNum(160,60,6789,6,16,RED,YELLOW);
     // LCD_ShowFloatNum(160,90,123.4,5,24,RED,YELLOW);
     // LCD_ShowPicture(0,0,240,135,ALIENTEK_LOGO);
-    LCD_ShowPicture(2,0,131,240,gImage_pic);
+    // LCD_ShowPicture(2,0,131,240,gImage_pic);
+    LCD_ShowChinese(20,20,"∆¡ƒª∫∫◊÷œ‘ æ",RED,BLACK,32,0);
 	while(1)
 	{
 		LED_R_TOGGLE;		

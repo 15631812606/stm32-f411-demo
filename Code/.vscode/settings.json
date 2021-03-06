@@ -9,6 +9,8 @@
         "led.h": "c",
         "lcd.h": "c",
         "tft_font.h": "c",
-        "pic.h": "c"
+        "pic.h": "c",
+        "lcdfont.h": "c",
+        "alientek_log.h": "c"
     }
 }
