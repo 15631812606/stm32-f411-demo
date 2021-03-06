@@ -2,7 +2,7 @@
 #define __DELAY_H 			   
 #include <sys.h>	  
 //初始化延迟函数:1us中断一次，最小延时时间1us
-void delay_init(u8 SYSCLK);							    
+void delay_init(u32 SYSCLK);							    
 
 //系统定时器--中断处理函数
 void TimingDelay_Decrement(void);

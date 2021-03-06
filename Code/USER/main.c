@@ -3,30 +3,33 @@
 #include "delay.h"
 #include "usart.h"
 #include "spi.h"
-#include "flash.h"
-#include "dma.h"
-
-//要发送的数据
-const u8 SRC_Buffer[BUFFER_SIZE] = {1,2,3,4,5,6,7,8,9,10};
-//数据存储位置
-u8 DST_Buffer[BUFFER_SIZE]={0};
+#include "lcd.h"
+#include "alientek_log.h"
+#include "pic.h"
 
 
 int main(void)
 {
-	delay_init(100);//主频100MHz
+	delay_init(100000);//主频100MHz
 	Usart1_Init(115200);
 	LED_GPIO_Init();
-	Usart1_DMA2_init();		//使能DMA2传输（M-to-Usart1）
+    printf("LCD屏幕驱动程序\r\n");
 
-	USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);
-	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);
-	//printf("DMA2_Usart1\r\n");
+    LCD_GPIO_init();
+    //LCD初始化
+    LCD_Init();
+    LCD_Clear(BLACK);
+    // LCD_DrawRectangle(10,10,100,100,RED);
+    // LCD_Draw_Circle(55,55,45,RED);
+    // LCD_ShowChar(55,55,'H',32,RED,WHITE);
+    // LCD_ShowString(20,20,16*11,32,32,"HELLO-WO123",RED,WHITE);
+    // LCD_ShowNum(160,60,6789,6,16,RED,YELLOW);
+    // LCD_ShowFloatNum(160,90,123.4,5,24,RED,YELLOW);
+    // LCD_ShowPicture(0,0,240,135,ALIENTEK_LOGO);
+    LCD_ShowPicture(2,0,131,240,gImage_pic);
 	while(1)
 	{
-		// DMA_ClearFlag(DMA2_Stream7,DMA_FLAG_TCIF7);	//清除通道1的传输完成标志位（必须清除标志位才能进行下一次传输）
-		// DMA_Cmd(DMA2_Stream7,ENABLE);				//再次使能DMA，重新启动一次传输
 		LED_R_TOGGLE;		
-		delay_ms(100);
+		delay_ms(1000);
 	}
 }

@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\src;..\FWLIB\inc;..\HARDWARE\LED;..\HARDWARE\SPI;..\HARDWARE\FLASH;..\HARDWARE\DMA</IncludePath>
+              <IncludePath>..\USER;..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\src;..\FWLIB\inc;..\HARDWARE\LED;..\HARDWARE\SPI;..\HARDWARE\FLASH;..\HARDWARE\DMA;..\HARDWARE\LCD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -433,14 +433,9 @@
               <FilePath>..\HARDWARE\SPI\spi.c</FilePath>
             </File>
             <File>
-              <FileName>flash.c</FileName>
+              <FileName>lcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\FLASH\flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\DMA\dma.c</FilePath>
+              <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
             </File>
           </Files>
         </Group>

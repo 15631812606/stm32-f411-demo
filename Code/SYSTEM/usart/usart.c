@@ -97,11 +97,11 @@ void Usart1_Send_String(u8 *data)
 
 void USART1_IRQHandler(void)//串口1中断服务程序
 {
-	u8 Res;
+//	u8 Res;
 	if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
 	{
 		USART_ReceiveData(USART1);//(USART1->DR);	//读取接收到的数据
-		Usart1_Send_String(&DST_Buffer);
+		//Usart1_Send_String(&DST_Buffer);
   	} 
 } 
 	
