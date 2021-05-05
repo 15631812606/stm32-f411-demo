@@ -6,7 +6,7 @@
 
 #define TIMEOUT 1000             //超时时间
 #define ERROR   0XEE            //返回错误码
-#define Dummy_Byte 0xFFFF       //虚拟数据（用来产生时钟）
+#define Dummy_Byte 0xFF       //虚拟数据（用来产生时钟）
 #define START   0               //启动
 #define STOP    1               //停止
 

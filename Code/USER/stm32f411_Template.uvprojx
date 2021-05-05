@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\src;..\FWLIB\inc;..\HARDWARE\LED;..\HARDWARE\SPI;..\HARDWARE\FLASH;..\HARDWARE\DMA;..\HARDWARE\LCD</IncludePath>
+              <IncludePath>..\USER;..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\src;..\FWLIB\inc;..\HARDWARE\LED;..\HARDWARE\SPI;..\HARDWARE\FLASH;..\HARDWARE\DMA;..\HARDWARE\LCD;..\HARDWARE\NRF24L01</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -436,6 +436,11 @@
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>nrf24l01.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\NRF24L01\nrf24l01.c</FilePath>
             </File>
           </Files>
         </Group>
