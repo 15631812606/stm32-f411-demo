@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "delay.h": "c",
+        "misc.h": "c",
+        "driver_led.h": "c",
+        "main.h": "c"
+    }
+}

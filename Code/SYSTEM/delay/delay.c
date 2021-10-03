@@ -1,41 +1,96 @@
-#include "delay.h"
-#include "sys.h"
-#include "misc.h"
-static u32 TimingDelay;			   
+/**
+ * @file delay.c
+ * @author WRS (1352509846@qq.com)
+ * @brief 延时函数相关内容
+ * @version 0.1
+ * @date 2021-10-04
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 
-//初始化延迟函数:1ms中断一次，最小延时时间1ms
-void delay_init(u32 SYSCLK)
+#include "delay.h"
+
+static u32  fac_us = 0;
+static u32 fac_ms = 0;		   
+
+/**
+ * @brief 延时功能初始化
+ * - 使用滴答定时器进行延时
+ * - 不进入中断，节省芯片资源
+ * - STM32F411芯片主频是100MHz
+ */
+void delay_init(void)
 {
-	if(SysTick_Config(SYSCLK))  
-		while (1);//系统定时器初始化失败
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);    //滴答定时器主频使用100M，不分频
+    fac_us = SystemCoreClock / 1000000; //100Mhz主频，每微秒需要跳动100次时钟
+    fac_ms = (u32)fac_us * 1000;        //每毫秒需要跳动100*1000次
 }								    
 
-//系统定时器--中断处理函数
-void TimingDelay_Decrement(void)
+/**
+ * @brief 微秒级延时函数
+ * 
+ * @param n_us 延时n微秒
+ */
+void delay_us(u32 n_us)
 {
-	if(TimingDelay!=0x00)
-		TimingDelay--;
+	u32 temp = 0;
+    SysTick->LOAD = n_us * fac_us;
+    SysTick->VAL = 0x00;
+    SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;   //启动定时
+    do
+    {
+        temp = SysTick->CTRL;
+    } while ((temp & 0x01) && !(temp & (1<<16)));
+    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+    SysTick->VAL = 0x00;
 }
 
-//	us	延时函数：最长延时4294967295us
-void delay_us(u32 us)//最小不能是微秒延时（这样进中断太快，比较消耗资源）
+/**
+ * @brief 毫秒级延时函数（不对外）
+ * @param n_ms 延时n毫秒(不能大于167毫秒)
+ */
+static void delay_xms(u32 n_ms)
 {
-	TimingDelay=us;
-	while(TimingDelay!=0);
+    u32 temp = 0;
+    SysTick->LOAD = (uint32_t)n_ms * fac_ms;
+	SysTick->VAL = 0x00;
+	SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+	do
+	{
+		temp = SysTick->CTRL;
+	} while ((temp & 0x01) && !(temp & (1 << 16)));
+	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+	SysTick->VAL = 0X00;
 }
 
-//	ms	延时函数:最长延时4294966ms
-void delay_ms(u32 ms)
+/**
+ * @brief 毫秒级延时函数
+ * - 由于滴答定时器计数器是24位的，所以延时不能大于167毫秒
+ * - 所以对毫秒延时函数重新封装，可以任意时间的毫秒延时
+ * @param n_ms 延时的毫秒数
+ */
+void delay_ms(u32 n_ms)
 {
-	TimingDelay=ms;
-	while (TimingDelay!=0);
+    u32 repeat = n_ms / 167;
+    u32 remain = n_ms % 167;
+
+    while(repeat)
+    {
+        delay_xms(167);
+        repeat--;
+    }
+    if(remain)
+        delay_xms(remain);
 }
 
-//	s	延时函数:最长延时4294s
+/**
+ * @brief 秒级延时函数
+ * @param s 延时的秒数
+ */
 void delay_s(u32 s)
 {
-	TimingDelay=s*1000;
-	while (TimingDelay!=0);
+	delay_ms(s*1000);
 }
 
 

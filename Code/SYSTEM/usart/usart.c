@@ -1,6 +1,5 @@
 #include "sys.h"
 #include "usart.h"	
-#include "dma.h"
 //加入以下代码,支持printf函数,而不需要选择use MicroLIB	  
 #if 1
 #pragma import(__use_no_semihosting)             
