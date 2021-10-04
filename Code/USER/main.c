@@ -1,9 +1,9 @@
 /**
  * @file main.c
  * @author WRS (1352509846@qq.com)
- * @brief main.cÎÄ¼þ£¬Ö÷º¯Êý´æ·ÅµÄÎÄ¼þ
- * - ±¾´ÎÊµÏÖµÄ¹¦ÄÜÊÇµãÁÁLEDµÆ
- * - ÅäÖÃµÎ´ð¶¨Ê±Æ÷£¬ÅäÖÃdelayº¯Êý
+ * @brief main.cæ–‡ä»¶ï¼Œä¸»å‡½æ•°å­˜æ”¾çš„æ–‡ä»¶
+ * - æœ¬æ¬¡å®žçŽ°çš„åŠŸèƒ½æ˜¯ç‚¹äº®LEDç¯
+ * - é…ç½®æ»´ç­”å®šæ—¶å™¨ï¼Œé…ç½®delayå‡½æ•°
  * @version 0.1
  * @date 2021-10-03
  * 

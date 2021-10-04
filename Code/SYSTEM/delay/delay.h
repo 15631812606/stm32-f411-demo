@@ -4,17 +4,17 @@
 #include "misc.h"
 #include "core_cm4.h"
 
-//³õÊ¼»¯ÑÓ³Ùº¯Êı
+//åˆå§‹åŒ–å»¶è¿Ÿå‡½æ•°
 void delay_init(void);							    
 
 
-//	us	ÑÓÊ±º¯Êı
-void delay_us(u32 us);
+//	us	å»¶æ—¶å‡½æ•°
+void delay_us(u32 n_us);
 
-//	ms	ÑÓÊ±º¯Êı
-void delay_ms(u32 ms);
+//	ms	å»¶æ—¶å‡½æ•°
+void delay_ms(u32 n_ms);
 
-//	s	ÑÓÊ±º¯Êı
+//	s	å»¶æ—¶å‡½æ•°
 void delay_s(u32 s);
 
 #endif
