@@ -1,19 +1,20 @@
-#ifndef __DELAY_H
-#define __DELAY_H 			   
-#include <sys.h>	  
-//³õÊ¼»¯ÑÓ³Ùº¯Êı:1usÖĞ¶ÏÒ»´Î£¬×îĞ¡ÑÓÊ±Ê±¼ä1us
-void delay_init(u32 SYSCLK);							    
+#ifndef __DELAY_H_
+#define __DELAY_H_ 			   
+#include "sys.h"
+#include "misc.h"
+#include "core_cm4.h"
 
-//ÏµÍ³¶¨Ê±Æ÷--ÖĞ¶Ï´¦Àíº¯Êı
-void TimingDelay_Decrement(void);
+//åˆå§‹åŒ–å»¶è¿Ÿå‡½æ•°
+void delay_init(void);							    
 
-//	us	ÑÓÊ±º¯Êı
-void delay_us(u32 us);
 
-//	ms	ÑÓÊ±º¯Êı
-void delay_ms(u32 ms);
+//	us	å»¶æ—¶å‡½æ•°
+void delay_us(u32 n_us);
 
-//	s	ÑÓÊ±º¯Êı:×î³¤ÑÓÊ±4294s
+//	ms	å»¶æ—¶å‡½æ•°
+void delay_ms(u32 n_ms);
+
+//	s	å»¶æ—¶å‡½æ•°
 void delay_s(u32 s);
 
 #endif
