@@ -3,6 +3,9 @@
         "delay.h": "c",
         "misc.h": "c",
         "driver_led.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "driver_usart.h": "c",
+        "stm32f4xx_conf.h": "c",
+        "stm32f4xx.h": "c"
     }
 }
