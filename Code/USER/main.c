@@ -13,25 +13,18 @@
 
 int main(void)
 {
+    u8 a = 99;
 	delay_init();
     usart1_init(115200);
     led_gpio_init();
-   
-    u8 i=210;
-    UARTx_send_datastream(USART1,&i,sizeof(i));
 
 	while(1)
 	{
-        LED_R_TOGGLE();
-        delay_ms(400);
-        LED_R_TOGGLE();
+        INFO("这是测试INFO = %d ",a);
+        DEBUG("这是测试debug = %d ",a);
+        ERROR("这是测试error = %d ",a);
 
-        LED_G_TOGGLE();
-        delay_ms(400);
-        LED_G_TOGGLE();
-
-        LED_B_TOGGLE();
-        delay_ms(400);
-        LED_B_TOGGLE();
+        LED_R_TOGGLE();
+        delay_ms(1000);
 	}
 }

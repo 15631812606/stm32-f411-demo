@@ -89,41 +89,25 @@ void UARTx_send_datastream(USART_TypeDef *USARTx, s8 *p, u32 length)
         return ;
     for(u32 i=0; i<length; i++)
     {
-        while(USART_GetFlagStatus(USART1,USART_FLAG_TXE)==RESET);//检测发送数据寄存器中数据是否取完
+        while(USART_GetFlagStatus(USARTx,USART_FLAG_TXE)==RESET);//检测发送数据寄存器中数据是否取完
         USART_SendData(USARTx, *(p+i));
-        while(USART_GetFlagStatus(USART1,USART_FLAG_TC)==RESET);//检测发送移位寄存器中数据是否发完
+        while(USART_GetFlagStatus(USARTx,USART_FLAG_TC)==RESET);//检测发送移位寄存器中数据是否发完
     }
 }
 
-//USART1发送字符串
-void Usart1_Send_String(u8 *data)
-{
-	while(*data != '\0')
-	{
-		while (USART_GetFlagStatus(USART1,USART_FLAG_TXE)!=SET);	
-		USART_SendData(USART1,(u16 )*data); 		//串口发送字节
-		while (USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
-		data++;
-	}
-}
-
+/*--------------------------------------------------------------
+ * 功能: 串口1中断函数
+ * 接收到串口数据，进入此中断函数
+----------------------------------------------------------------*/
 void USART1_IRQHandler(void)//串口1中断服务程序
 {
-//	u8 Res;
 	if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
 	{
 		USART_ReceiveData(USART1);//(USART1->DR);	//读取接收到的数据
-		//Usart1_Send_String(&DST_Buffer);
   	} 
 } 
 	
-/******************** 重定向printf到串口 **************/
-int fputc(int ch, FILE *f)
-{
-    while (RESET == USART_GetFlagStatus(USART1, USART_FLAG_TXE));
-    USART_SendData(USART1, (int8_t)ch);
-    return ch;
-}
+
  
 
 

@@ -5,4 +5,8 @@
 #include "delay.h"
 #include "Driver_led.h"
 #include "Driver_usart.h"
+#include "debug.h"
+
+
+
 #endif
