@@ -52,6 +52,7 @@
     
 #ifndef __STM32F4xx_H
 #define __STM32F4xx_H
+#define STM32F411xE 1
 #ifdef __cplusplus
  extern "C" {
 #endif /* __cplusplus */

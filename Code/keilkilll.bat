@@ -24,5 +24,7 @@ del *.iex /s
 del *.htm /s
 del *.sct /s
 del *.map /s
+del *.lnp /s
+del *.scvd /s
 del stm32f411_Template.uvguix.* /s
 exit
