@@ -98,12 +98,36 @@ void UARTx_send_datastream(USART_TypeDef *USARTx, s8 *p, u32 length)
 /*--------------------------------------------------------------
  * 功能: 串口1中断函数
  * 接收到串口数据，进入此中断函数
+ * 关于串口中断问题看下面网址内容
+ * https://blog.csdn.net/qq_38685043/article/details/120619552
 ----------------------------------------------------------------*/
 void USART1_IRQHandler(void)//串口1中断服务程序
 {
-	if(USART_GetITStatus(USART1, USART_IT_IDLE) != RESET)
+    u16 str = 0;
+    if (USART_GetFlagStatus(USART1, USART_FLAG_PE) != RESET)
+    {
+        USART_ReceiveData(USART1);
+        USART_ClearFlag(USART1, USART_FLAG_PE);
+    }
+    
+    if (USART_GetFlagStatus(USART1, USART_FLAG_ORE) != RESET)
+    {
+        USART_ReceiveData(USART1);
+        USART_ClearFlag(USART1, USART_FLAG_ORE);
+    }
+    
+    if (USART_GetFlagStatus(USART1, USART_FLAG_FE) != RESET)
+    {
+        USART_ReceiveData(USART1);
+        USART_ClearFlag(USART1, USART_FLAG_FE);
+    }
+
+	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
-		USART_ReceiveData(USART1);//(USART1->DR);	//读取接收到的数据
+        USART_ClearFlag(USART1, USART_FLAG_RXNE);
+        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+		str = USART_ReceiveData(USART1);        //读取接收到的数据
+		USART_SendData(USART1,str);
   	} 
 } 
 	
