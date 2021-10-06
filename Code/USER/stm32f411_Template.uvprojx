@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\CORE;..\SYSTEM;..\SYSTEM\delay;..\SYSTEM\sys;..\FWLIB\src;..\FWLIB\inc;..\HARDWARE\LED;..\HARDWARE\USART</IncludePath>
+              <IncludePath>..\USER;..\CORE;..\SYSTEM\debug;..\SYSTEM\delay;..\SYSTEM\sys;..\FWLIB\src;..\FWLIB\inc;..\HARDWARE\LED;..\HARDWARE\USART;..\HARDWARE\SPI</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -413,6 +413,11 @@
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\sys\sys.c</FilePath>
             </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\debug\debug.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -427,6 +432,11 @@
               <FileName>Driver_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\USART\Driver_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driver_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\SPI\Driver_spi.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,19 +1,22 @@
-/*------------------------------------------
-    # 编码类型：C语言  UTF-8
-    # 作者：WRS
-    # 功能：STM32F411--spi相关配置函数
-    # 创建：2021-07-04
-    # 更新：
-    # 版本：V1.0.0
---------------------------------------------*/
+/*--------------------------------------------------------------
+ * File: Driver_spi.h 编码类型：C语言  UTF-8
+ * Author WRS (1352509846@qq.com)
+ * 功能: STM32F411的spi驱动
+ * Version 0.1
+ * Date 2021-10-06 
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+----------------------------------------------------------------*/
+
 #ifndef __SPI_H_
 #define __SPI_H_
 #include "stm32f4xx.h"
 #include "stm32f4xx_conf.h"
 #include "sys.h"
+#include "debug.h"
 
 #define TIMEOUT 1000             //超时时间
-#define ERROR   0XEE            //返回错误码
 #define Dummy_Byte 0xFF       //虚拟数据（用来产生时钟）
 #define START   0               //启动
 #define STOP    1               //停止
