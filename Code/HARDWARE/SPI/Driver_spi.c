@@ -83,11 +83,6 @@ void spi2_init(void)
     GPIO_InitStructure.GPIO_PuPd=GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB,&GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_12;                            //片选引脚CS
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_OUT;                         //推挽输出
-    GPIO_Init(GPIOB,&GPIO_InitStructure);
-    GPIO_SetBits(GPIOB,GPIO_Pin_12);                                    //拉高CS引脚，防止误传数据
-
     //配置SPI模式
     SPI_DeInit(SPI2);                                                   //复位SPI2的寄存器
     SPI_InitStructure.SPI_Direction=SPI_Direction_2Lines_FullDuplex;    //全双工模式
@@ -142,6 +137,13 @@ void spi3_init(void)
     SPI_Cmd(SPI3,ENABLE);
 }
 
+/*--------------------------------------------------------------
+ * 功能: SPI发送和读取数据
+ * 由于SPI是全双工的，所以发送的同时就伴随着数据的接收
+ * 参数: spix SPI接口
+ * 参数: data 数据
+ * 返回值: u8 读取到的数据
+----------------------------------------------------------------*/
 u8 spix_read_write_byte(SPI_TypeDef* spix, u8 data)
 {
     u16 SPITimeout=TIMEOUT; //设置超时时间
@@ -150,7 +152,7 @@ u8 spix_read_write_byte(SPI_TypeDef* spix, u8 data)
     {
         if((SPITimeout--)==0)
         {
-            ERROR("SPI发送超时！！！");
+            MY_ERROR("SPI发送超时！！！");
             return 0;
         }
     }
@@ -162,7 +164,7 @@ u8 spix_read_write_byte(SPI_TypeDef* spix, u8 data)
     {
         if((SPITimeout--)==0)
         {
-            ERROR("SPI发送超时！！！");
+            MY_ERROR("SPI发送超时！！！");
             return 0;
         }
     }
@@ -180,11 +182,11 @@ void SPI3_WriteData(u16 data,u8 size)
 {
     if(size == 1)
     {
-        SPI3_Send_Byte((u8)data);
+        spix_read_write_byte(SPI3,(u8)data);
     }
     else if(size == 2)
     {
-        SPI3_Send_Byte((u8)(data>>8));
-        SPI3_Send_Byte((u8)data);
+        spix_read_write_byte(SPI3,(u8)(data>>8));
+        spix_read_write_byte(SPI3,(u8)data);
     }
 }

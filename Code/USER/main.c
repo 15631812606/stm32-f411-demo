@@ -13,17 +13,12 @@
 
 int main(void)
 {
-    u8 a = 99;
 	delay_init();
     usart1_init(115200);
     led_gpio_init();
-
+    W25Qxx_init();
 	while(1)
 	{
-        INFO("这是测试INFO = %d ",a);
-        DEBUG("这是测试debug = %d ",a);
-        ERROR("这是测试error = %d ",a);
-
         LED_R_TOGGLE();
         delay_ms(1000);
 	}

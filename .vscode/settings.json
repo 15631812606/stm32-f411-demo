@@ -8,6 +8,7 @@
         "stm32f4xx_conf.h": "c",
         "stm32f4xx.h": "c",
         "driver_spi.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "driver_flash.h": "c"
     }
 }

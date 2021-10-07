@@ -6,6 +6,7 @@
 #include "Driver_led.h"
 #include "Driver_usart.h"
 #include "Driver_spi.h"
+#include "Driver_flash.h"
 #include "debug.h"
 
 
